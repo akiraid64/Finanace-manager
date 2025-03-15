@@ -1,0 +1,131 @@
+{% extends 'layout.html' %}
+
+{% block title %}Finance Manager - Transactions{% endblock %}
+
+{% block content %}
+<h1 class="page-header">Transaction History</h1>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="summary-card income-card">
+            <h4><i class="fas fa-arrow-up me-2"></i>Total Income</h4>
+            <h2 class="income-text">${{ total_income|round(2) }}</h2>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="summary-card expense-card">
+            <h4><i class="fas fa-arrow-down me-2"></i>Total Expenses</h4>
+            <h2 class="expense-text">${{ total_expenses|round(2) }}</h2>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="summary-card balance-card">
+            <h4><i class="fas fa-wallet me-2"></i>Remaining Budget</h4>
+            <h2 class="{{ 'income-text' if remaining_budget >= 0 else 'expense-text' }}">
+                ${{ remaining_budget|round(2) }}
+            </h2>
+            <small class="text-muted">Calculated using C++ function</small>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-dark d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Transaction List</h5>
+                <a href="/" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus me-1"></i>Add New
+                </a>
+            </div>
+            <div class="card-body">
+                {% if transactions.empty %}
+                <div class="alert alert-info">
+                    <p class="mb-0">No transactions found. Add your first transaction on the home page!</p>
+                </div>
+                {% else %}
+                <div class="table-responsive transactions-table">
+                    <table class="table table-hover">
+                        <thead class="table-header">
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for index, row in transactions.iterrows() %}
+                            <tr>
+                                <td>{{ row.date.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    {% if row.type == 'income' %}
+                                    <span class="badge bg-success">Income</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Expense</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ row.category }}</td>
+                                <td>{{ row.description }}</td>
+                                <td class="{{ 'income-text' if row.type == 'income' else 'expense-text' }}">
+                                    ${{ row.amount|round(2) }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if not transactions.empty and category_totals %}
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h5 class="mb-0">Expense Summary by Category</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="table-header">
+                            <tr>
+                                <th>Category</th>
+                                <th>Total Amount</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category, amount in category_totals.items() %}
+                            <tr>
+                                <td>{{ category }}</td>
+                                <td>${{ amount|round(2) }}</td>
+                                <td>
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar bg-danger" 
+                                             role="progressbar" 
+                                             style="width: {{ (amount / total_expenses * 100)|round }}%;"
+                                             aria-valuenow="{{ (amount / total_expenses * 100)|round }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                            {{ (amount / total_expenses * 100)|round }}%
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

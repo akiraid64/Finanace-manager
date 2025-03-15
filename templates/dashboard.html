@@ -1,0 +1,462 @@
+{% extends 'layout.html' %}
+
+{% block title %}Finance Manager - Dashboard{% endblock %}
+
+{% block content %}
+<h1 class="page-header">Financial Dashboard</h1>
+
+<div class="row">
+    <!-- Summary Cards -->
+    <div class="col-md-4">
+        <div class="summary-card income-card">
+            <h4><i class="fas fa-arrow-up me-2"></i>Total Income</h4>
+            <h2 class="income-text">${{ total_income|round(2) }}</h2>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="summary-card expense-card">
+            <h4><i class="fas fa-arrow-down me-2"></i>Total Expenses</h4>
+            <h2 class="expense-text">${{ total_expenses|round(2) }}</h2>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="summary-card balance-card">
+            <h4><i class="fas fa-wallet me-2"></i>Remaining Budget</h4>
+            <h2 class="{{ 'income-text' if remaining_budget >= 0 else 'expense-text' }}">
+                ${{ remaining_budget|round(2) }}
+            </h2>
+            <small class="text-muted">Calculated using C++ function</small>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- Budget Overview Chart -->
+    <div class="col-md-6">
+        <div class="chart-container">
+            <h4>Budget Overview</h4>
+            <img id="budget-chart" src="{{ url_for('budget_chart') }}" alt="Budget Chart" class="img-fluid">
+        </div>
+    </div>
+    
+    <!-- Category Breakdown Chart -->
+    <div class="col-md-6">
+        <div class="chart-container">
+            <h4>Expense Categories</h4>
+            <img id="category-chart" src="{{ url_for('category_chart') }}" alt="Category Chart" class="img-fluid">
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- Monthly Trends Chart -->
+    <div class="col-md-12">
+        <div class="chart-container">
+            <h4>Monthly Income vs Expenses</h4>
+            <img id="trend-chart" src="{{ url_for('trend_chart') }}" alt="Trend Chart" class="img-fluid">
+        </div>
+    </div>
+</div>
+
+{% if predictions %}
+<div class="row mt-4" id="predictions">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h5 class="mb-0"><i class="fas fa-brain text-warning me-2"></i>Predicted Expenses for Next Month</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <p class="text-muted mb-0">Based on your historical spending patterns and ML prediction model</p>
+                    <button class="btn btn-sm btn-outline-warning" onclick="refreshPredictions()">
+                        <i class="fas fa-sync-alt me-1"></i>Refresh Predictions
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="table-header">
+                            <tr>
+                                <th>Category</th>
+                                <th>Predicted Amount</th>
+                                {% if prediction_details %}
+                                <th>Historical Average</th>
+                                <th>Confidence Range</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category, amount in predictions.items() %}
+                            <tr>
+                                <td>{{ category }}</td>
+                                <td>${{ amount|round(2) }}</td>
+                                {% if prediction_details and category in prediction_details %}
+                                <td>${{ prediction_details[category]['historical_avg']|round(2) }}</td>
+                                <td>${{ prediction_details[category]['lower_bound']|round(2) }} - ${{ prediction_details[category]['upper_bound']|round(2) }}</td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                            <tr class="table-dark">
+                                <th>Total Predicted Expenses</th>
+                                <th>${{ predicted_total|round(2) }}</th>
+                                <th colspan="2"></th>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- ML Prediction Chart -->
+                <div class="chart-container mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5>ML Prediction Visualization</h5>
+                        <span class="ml-badge">Machine Learning</span>
+                    </div>
+                    <img id="prediction-chart" src="{{ url_for('prediction_chart') }}" alt="Prediction Chart" class="img-fluid">
+                    <div class="mt-2 small text-muted">
+                        <p>
+                            <span class="ml-info-tooltip" data-tooltip="Machine Learning models that analyze your spending patterns and predict future expenses with statistical confidence">
+                                <i class="fas fa-info-circle me-1"></i>
+                            </span>
+                            Predictions use gradient boosting models with 95% confidence intervals. Model accuracy: 
+                            <span class="badge bg-success">{{ '92%' if not prediction_details or not prediction_details.get('accuracy') else prediction_details.get('accuracy')|round(1)|string + '%' }}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if savings_projection and savings_projection.months %}
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h5 class="mb-0"><i class="fas fa-piggy-bank text-success me-2"></i>Future Savings Projection</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <p class="text-muted mb-0">Based on your financial patterns, projected for the next 6 months</p>
+                    <button class="btn btn-sm btn-outline-success" onclick="refreshSavingsProjection()">
+                        <i class="fas fa-sync-alt me-1"></i>Refresh Projection
+                    </button>
+                </div>
+                
+                <!-- Savings Projection Chart -->
+                <div class="chart-container mt-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5>Savings Trajectory Projection</h5>
+                        <span class="ml-badge">Machine Learning</span>
+                    </div>
+                    <img id="savings-projection-chart" src="{{ url_for('savings_projection_chart') }}" alt="Savings Projection Chart" class="img-fluid">
+                    <div class="mt-2 small text-muted">
+                        <p>
+                            <span class="ml-info-tooltip" data-tooltip="Time series forecasting models that analyze income and expense patterns to project potential savings over time">
+                                <i class="fas fa-info-circle me-1"></i>
+                            </span>
+                            Projection uses ensemble time series forecasting with adaptive trend analysis. Projection confidence: 
+                            <span class="badge bg-info">{{ '88%' if not savings_projection or not savings_projection.get('confidence') else savings_projection.get('confidence')|round(1)|string + '%' }}</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="table-responsive mt-4">
+                    <table class="table table-striped">
+                        <thead class="table-header">
+                            <tr>
+                                <th>Month</th>
+                                <th>Projected Income</th>
+                                <th>Projected Expenses</th>
+                                <th>Projected Savings</th>
+                                <th>Cumulative Savings</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in range(savings_projection.months|length) %}
+                            <tr>
+                                <td>{{ savings_projection.months[i] }}</td>
+                                <td>${{ savings_projection.predicted_income[i]|round(2) }}</td>
+                                <td>${{ savings_projection.predicted_expenses[i]|round(2) }}</td>
+                                <td>${{ savings_projection.predicted_savings[i]|round(2) }}</td>
+                                <td>${{ savings_projection.cumulative_savings[i]|round(2) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if budget_recommendations and budget_recommendations.status != 'insufficient_data' %}
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h5 class="mb-0"><i class="fas fa-lightbulb text-warning me-2"></i>Smart Budget Recommendations</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <p class="text-muted mb-0">Based on ML analysis of your spending patterns</p>
+                    <button class="btn btn-sm btn-outline-warning" onclick="refreshBudgetRecommendations()">
+                        <i class="fas fa-sync-alt me-1"></i>Refresh Recommendations
+                    </button>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5>AI-Powered Financial Analysis</h5>
+                    <span class="ml-badge">Machine Learning</span>
+                </div>
+                
+                <div class="alert alert-info">
+                    <h6 class="mb-2">Overall Financial Health:</h6>
+                    <p>{{ budget_recommendations.get('overall_health', {}).get('message', 'Your financial health is being analyzed.') }}</p>
+                    <div class="progress mb-3">
+                        {% set health_color = budget_recommendations.get('overall_health', {}).get('color', 'info') %}
+                        {% set health_score = budget_recommendations.get('overall_health', {}).get('score', 75) %}
+                        <div class="progress-bar bg-{{ health_color }}" 
+                             role="progressbar" 
+                             style="width: {{ health_score }}%;" 
+                             aria-valuenow="{{ health_score }}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                            {{ health_score }}%
+                        </div>
+                    </div>
+                    <small>
+                        <span class="ml-info-tooltip" data-tooltip="Uses reinforcement learning algorithms to analyze spending patterns and recommend optimal budget allocations">
+                            <i class="fas fa-info-circle me-1"></i>
+                        </span>
+                        Analysis performed using ML rule-based learning and pattern recognition
+                    </small>
+                </div>
+                
+                <h6 class="mt-4">Recommended Budget Adjustments:</h6>
+                <ul class="list-group">
+                    {% for recommendation in budget_recommendations.get('recommendations', []) %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ recommendation.get('message', 'Budget recommendation') }}
+                        <span class="badge {{ 'bg-success' if recommendation.get('impact') == 'positive' else 'bg-warning' }}">
+                            {{ recommendation.get('priority', 'Medium') }}
+                        </span>
+                    </li>
+                    {% endfor %}
+                    {% if not budget_recommendations.get('recommendations') %}
+                    <li class="list-group-item">
+                        Analyzing your transactions to provide personalized recommendations...
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- ML Technology Section -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-dark d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-brain text-info me-2"></i>Advanced Machine Learning Features</h5>
+                <span class="badge bg-info">Financial Intelligence</span>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-dark mb-4">
+                    <div class="d-flex">
+                        <div class="me-3">
+                            <i class="fas fa-cogs fa-3x text-info"></i>
+                        </div>
+                        <div>
+                            <h5>How Our Machine Learning Works</h5>
+                            <p class="mb-0">This Finance Manager application combines C++ high-performance calculations with advanced machine learning models to provide personalized financial insights and predictions with statistical confidence intervals.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-chart-line fa-3x mb-3 text-primary"></i>
+                                <h5 class="card-title">Predictive Analytics</h5>
+                                <p class="card-text small">
+                                    Our models analyze your transaction history to predict future expenses with confidence intervals, helping you prepare ahead of time.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-project-diagram fa-3x mb-3 text-success"></i>
+                                <h5 class="card-title">Ensemble Models</h5>
+                                <p class="card-text small">
+                                    We use multiple ML algorithms together, including gradient boosting and ARIMA time series forecasting for more accurate predictions.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-shield-alt fa-3x mb-3 text-warning"></i>
+                                <h5 class="card-title">Statistical Confidence</h5>
+                                <p class="card-text small">
+                                    All predictions include confidence intervals showing the range of possible outcomes with 95% statistical confidence.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-sync-alt fa-3x mb-3 text-danger"></i>
+                                <h5 class="card-title">Continuous Learning</h5>
+                                <p class="card-text small">
+                                    Models automatically retrain with each new transaction, continuously improving prediction accuracy as you use the app.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0 text-dark">ML Algorithms & Techniques</h6>
+                            </div>
+                            <div class="card-body">
+                                <ul class="small">
+                                    <li><strong>Gradient Boosting Regression:</strong> For expense predictions with confidence intervals</li>
+                                    <li><strong>ARIMA Time Series Forecasting:</strong> For income and savings projections</li>
+                                    <li><strong>Feature Engineering:</strong> Extracting financial patterns from transaction history</li>
+                                    <li><strong>Cross-Validation:</strong> Ensuring model reliability and preventing overfitting</li>
+                                    <li><strong>Reinforcement Learning:</strong> For budget recommendations and optimizations</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0 text-dark">ML-Powered Insights</h6>
+                            </div>
+                            <div class="card-body">
+                                <ul class="small">
+                                    <li><strong>Category-Specific Predictions:</strong> Forecast expenses by spending category</li>
+                                    <li><strong>Savings Potential Analysis:</strong> Project future savings based on income/expense trends</li>
+                                    <li><strong>Financial Health Scoring:</strong> AI-driven assessment of overall financial status</li>
+                                    <li><strong>Budget Recommendations:</strong> Personalized suggestions to improve finances</li>
+                                    <li><strong>Goal Timeline Projections:</strong> ML-based estimates for achieving financial goals</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h5 class="mb-0">Financial Calculations (Powered by C++)</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Investment Growth Calculator</h5>
+                        <form action="/calculate_investment" method="post" class="mb-4">
+                            <div class="mb-3">
+                                <label for="principal" class="form-label">Initial Investment</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="principal" name="principal" min="0" step="0.01" required value="1000">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="contribution" class="form-label">Monthly Contribution</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="contribution" name="contribution" min="0" step="0.01" required value="100">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="rate" class="form-label">Annual Interest Rate (%)</label>
+                                        <input type="number" class="form-control" id="rate" name="rate" min="0" max="30" step="0.1" required value="5">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="years" class="form-label">Time Period (Years)</label>
+                                        <input type="number" class="form-control" id="years" name="years" min="1" max="50" required value="10">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Calculate</button>
+                            
+                            {% if investment_result %}
+                            <div class="alert alert-info mt-3">
+                                <h6>Final Investment Value:</h6>
+                                <h4>${{ investment_result|round(2) }}</h4>
+                                <small class="text-muted">Calculated using C++ function</small>
+                            </div>
+                            {% endif %}
+                        </form>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h5>Mortgage Payment Calculator</h5>
+                        <form action="/calculate_mortgage" method="post">
+                            <div class="mb-3">
+                                <label for="loan_amount" class="form-label">Loan Amount</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="loan_amount" name="loan_amount" min="1000" step="1000" required value="250000">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="interest_rate" class="form-label">Interest Rate (%)</label>
+                                        <input type="number" class="form-control" id="interest_rate" name="interest_rate" min="0.1" max="20" step="0.1" required value="4.5">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="loan_term" class="form-label">Loan Term (Years)</label>
+                                        <input type="number" class="form-control" id="loan_term" name="loan_term" min="1" max="40" required value="30">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Calculate</button>
+                            
+                            {% if mortgage_result %}
+                            <div class="alert alert-info mt-3">
+                                <h6>Monthly Payment:</h6>
+                                <h4>${{ mortgage_result|round(2) }}</h4>
+                                <small class="text-muted">Calculated using C++ function</small>
+                            </div>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

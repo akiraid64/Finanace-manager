@@ -1,0 +1,234 @@
+{% extends 'layout.html' %}
+
+{% block title %}Finance Manager - Home{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <h1 class="display-4 page-header">Welcome to Finance Manager</h1>
+    <p class="lead">
+        A high-performance financial management application built with C++, Python, and machine learning predictions
+    </p>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-3">
+        <div class="card fin-card">
+            <div class="card-body text-center">
+                <i class="fas fa-calculator fa-3x mb-3 text-primary"></i>
+                <h5 class="card-title">High-Performance Calculations</h5>
+                <p class="card-text">
+                    Powered by C++ for ultra-fast financial calculations, with Python for user-friendly interfaces.
+                </p>
+                <a href="/dashboard" class="btn btn-primary">View Dashboard</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card fin-card">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-pie fa-3x mb-3 text-success"></i>
+                <h5 class="card-title">Visualize Your Finances</h5>
+                <p class="card-text">
+                    Interactive charts and graphs help you understand where your money goes.
+                </p>
+                <a href="/dashboard" class="btn btn-success">View Charts</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card fin-card">
+            <div class="card-body text-center">
+                <i class="fas fa-exchange-alt fa-3x mb-3 text-info"></i>
+                <h5 class="card-title">Manage Transactions</h5>
+                <p class="card-text">
+                    Easily record and track your income and expenses in one place.
+                </p>
+                <a href="/transactions" class="btn btn-info">Manage Transactions</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card fin-card">
+            <div class="card-body text-center">
+                <i class="fas fa-brain fa-3x mb-3 text-warning"></i>
+                <h5 class="card-title">ML Predictions</h5>
+                <p class="card-text">
+                    Advanced machine learning models predict your future expenses and savings potential.
+                </p>
+                <a href="/dashboard#predictions" class="btn btn-warning">View Predictions</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-6 offset-md-3">
+        <div class="card transaction-form">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="income-tab" href="#" onclick="toggleTransactionType('income')">
+                            <i class="fas fa-plus-circle text-success me-1"></i> Add Income
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="expense-tab" href="#" onclick="toggleTransactionType('expense')">
+                            <i class="fas fa-minus-circle text-danger me-1"></i> Add Expense
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <!-- Income Form -->
+                <form id="income-form" action="/add_transaction" method="post" onsubmit="return validateTransactionForm('income-form')">
+                    <input type="hidden" name="transaction_type" value="income">
+                    
+                    <div class="mb-3">
+                        <label for="income-category" class="form-label">Category</label>
+                        <select class="form-select" id="income-category" name="category" required>
+                            <option value="" selected disabled>Select category...</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Freelance">Freelance</option>
+                            <option value="Investments">Investments</option>
+                            <option value="Gifts">Gifts</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="income-description" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="income-description" name="description" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="income-amount" class="form-label">Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="income-amount" name="amount" min="0.01" step="0.01" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-plus-circle me-1"></i> Add Income
+                    </button>
+                </form>
+                
+                <!-- Expense Form -->
+                <form id="expense-form" action="/add_transaction" method="post" class="d-none" onsubmit="return validateTransactionForm('expense-form')">
+                    <input type="hidden" name="transaction_type" value="expense">
+                    
+                    <div class="mb-3">
+                        <label for="expense-category" class="form-label">Category</label>
+                        <select class="form-select" id="expense-category" name="category" required>
+                            <option value="" selected disabled>Select category...</option>
+                            <option value="Food">Food</option>
+                            <option value="Transportation">Transportation</option>
+                            <option value="Housing">Housing</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="expense-description" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="expense-description" name="description" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="expense-amount" class="form-label">Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="expense-amount" name="amount" min="0.01" step="0.01" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="fas fa-minus-circle me-1"></i> Add Expense
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-dark">
+                <h5 class="mb-0">About Finance Manager</h5>
+            </div>
+            <div class="card-body">
+                <h5>Powered by C++, Python and Machine Learning</h5>
+                <p>
+                    This application demonstrates the integration of C++, Python, and machine learning for comprehensive financial management:
+                </p>
+                <ul>
+                    <li><strong>C++ Module</strong>: Core financial functions compiled to a high-performance shared library.</li>
+                    <li><strong>Python Frontend</strong>: User-friendly web interface for data visualization and management.</li>
+                    <li><strong>pybind11 Integration</strong>: Seamless binding between C++ and Python.</li>
+                    <li><strong>ML Predictions</strong>: Advanced machine learning algorithms for expense predictions and financial planning.</li>
+                    <li><strong>Confidence Intervals</strong>: Statistical modeling to provide prediction ranges with confidence levels.</li>
+                </ul>
+                <p>
+                    The integration leverages the performance of C++ for computational-heavy tasks, Python's 
+                    rich ecosystem for data analysis, and machine learning for predictive financial intelligence.
+                </p>
+                
+                <h5 class="mt-4">Machine Learning Features</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6><i class="fas fa-chart-line text-primary me-2"></i>Expense Predictions</h6>
+                                <p class="small">
+                                    Our ML model analyzes your spending patterns to predict future expenses
+                                    with statistical confidence intervals, helping you prepare for what's ahead.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6><i class="fas fa-piggy-bank text-success me-2"></i>Savings Projections</h6>
+                                <p class="small">
+                                    Advanced modeling of income and expense trends projects your savings potential
+                                    over time, giving you clear financial goals and milestones.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6><i class="fas fa-bullseye text-danger me-2"></i>Goal Analysis</h6>
+                                <p class="small">
+                                    Set financial goals and let our ML models analyze the timeframe and feasibility
+                                    based on your current financial patterns.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6><i class="fas fa-lightbulb text-warning me-2"></i>Budget Recommendations</h6>
+                                <p class="small">
+                                    Receive intelligent budget adjustment recommendations based on your spending
+                                    patterns and financial goals.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
