@@ -1,0 +1,117 @@
+date,category,description,amount,type
+2025-03-15,Salary,Monthly salary,5000.0,income
+2025-02-13,Salary,Monthly salary,5000.0,income
+2025-01-14,Salary,Monthly salary,5000.0,income
+2024-12-15,Salary,Monthly salary,5000.0,income
+2024-11-15,Salary,Monthly salary,5000.0,income
+2024-10-16,Salary,Monthly salary,5000.0,income
+2025-01-29,Investments,Stock dividend,320.5,income
+2025-02-28,Side Business,Freelance work,750.0,income
+2025-03-20,Housing,Rent payment,1644.0,expense
+2025-03-06,Housing,Home insurance,1545.6,expense
+2025-03-27,Housing,Property maintenance,1449.0,expense
+2025-03-17,Food,Grocery shopping,346.5,expense
+2025-03-28,Food,Restaurant dinner,108.48,expense
+2025-03-10,Food,Lunch at work,80.4,expense
+2025-03-05,Transportation,Car payment,318.6,expense
+2025-03-07,Transportation,Fuel,80.92,expense
+2025-03-21,Transportation,Public transit,47.9,expense
+2025-03-20,Utilities,Electricity bill,110.4,expense
+2025-03-23,Utilities,Water bill,58.44,expense
+2025-03-02,Utilities,Internet service,76.32,expense
+2025-03-01,Entertainment,Movie tickets,26.3,expense
+2025-03-19,Entertainment,Concert tickets,85.12,expense
+2025-03-25,Entertainment,Streaming services,29.52,expense
+2025-03-04,Healthcare,Doctor visit,95.0,expense
+2025-03-22,Healthcare,Prescription medication,37.28,expense
+2025-03-25,Healthcare,Health insurance,192.4,expense
+2025-02-06,Housing,Rent payment,1485.0,expense
+2025-02-18,Housing,Home insurance,1673.6,expense
+2025-02-01,Housing,Property maintenance,1551.0,expense
+2025-02-08,Food,Grocery shopping,333.9,expense
+2025-02-12,Food,Restaurant dinner,124.56,expense
+2025-02-17,Food,Lunch at work,78.9,expense
+2025-02-12,Transportation,Car payment,289.8,expense
+2025-02-02,Transportation,Fuel,85.51,expense
+2025-02-09,Transportation,Public transit,47.1,expense
+2025-02-07,Utilities,Electricity bill,108.96,expense
+2025-02-14,Utilities,Water bill,60.36,expense
+2025-02-20,Utilities,Internet service,81.76,expense
+2025-02-26,Entertainment,Movie tickets,25.75,expense
+2025-02-27,Entertainment,Concert tickets,76.48,expense
+2025-02-15,Entertainment,Streaming services,31.5,expense
+2025-02-28,Healthcare,Doctor visit,102.8,expense
+2025-02-10,Healthcare,Prescription medication,43.68,expense
+2025-02-15,Healthcare,Health insurance,194.0,expense
+2025-01-18,Housing,Rent payment,1548.0,expense
+2025-01-28,Housing,Home insurance,1568.0,expense
+2025-01-17,Housing,Property maintenance,1383.0,expense
+2025-01-28,Food,Grocery shopping,361.2,expense
+2025-01-09,Food,Restaurant dinner,116.16,expense
+2025-01-26,Food,Lunch at work,70.5,expense
+2025-01-05,Transportation,Car payment,291.6,expense
+2025-01-07,Transportation,Fuel,91.8,expense
+2025-01-08,Transportation,Public transit,49.4,expense
+2025-01-24,Utilities,Electricity bill,117.12,expense
+2025-01-24,Utilities,Water bill,58.2,expense
+2025-01-09,Utilities,Internet service,79.84,expense
+2025-01-15,Entertainment,Movie tickets,26.35,expense
+2025-01-23,Entertainment,Concert tickets,76.32,expense
+2025-01-20,Entertainment,Streaming services,31.68,expense
+2025-01-14,Healthcare,Doctor visit,106.8,expense
+2025-01-24,Healthcare,Prescription medication,41.04,expense
+2025-01-05,Healthcare,Health insurance,203.2,expense
+2024-12-11,Housing,Rent payment,1542.0,expense
+2024-12-09,Housing,Home insurance,1529.6,expense
+2024-12-10,Housing,Property maintenance,1584.0,expense
+2024-12-22,Food,Grocery shopping,380.8,expense
+2024-12-08,Food,Restaurant dinner,118.32,expense
+2024-12-18,Food,Lunch at work,70.8,expense
+2024-12-12,Transportation,Car payment,304.2,expense
+2024-12-25,Transportation,Fuel,89.25,expense
+2024-12-20,Transportation,Public transit,52.5,expense
+2024-12-19,Utilities,Electricity bill,112.8,expense
+2024-12-17,Utilities,Water bill,60.24,expense
+2024-12-10,Utilities,Internet service,82.24,expense
+2024-12-02,Entertainment,Movie tickets,24.1,expense
+2024-12-17,Entertainment,Concert tickets,77.12,expense
+2024-12-15,Entertainment,Streaming services,28.56,expense
+2024-12-26,Healthcare,Doctor visit,107.6,expense
+2024-12-26,Healthcare,Prescription medication,42.24,expense
+2024-12-16,Healthcare,Health insurance,212.8,expense
+2024-11-15,Housing,Rent payment,1500.0,expense
+2024-11-19,Housing,Home insurance,1750.4,expense
+2024-11-23,Housing,Property maintenance,1629.0,expense
+2024-11-04,Food,Grocery shopping,342.3,expense
+2024-11-04,Food,Restaurant dinner,126.48,expense
+2024-11-20,Food,Lunch at work,67.8,expense
+2024-11-04,Transportation,Car payment,321.0,expense
+2024-11-22,Transportation,Fuel,88.91,expense
+2024-11-14,Transportation,Public transit,54.2,expense
+2024-11-12,Utilities,Electricity bill,130.56,expense
+2024-11-03,Utilities,Water bill,61.92,expense
+2024-11-03,Utilities,Internet service,72.64,expense
+2024-11-25,Entertainment,Movie tickets,26.2,expense
+2024-11-26,Entertainment,Concert tickets,76.32,expense
+2024-11-06,Entertainment,Streaming services,32.1,expense
+2024-11-01,Healthcare,Doctor visit,106.6,expense
+2024-11-03,Healthcare,Prescription medication,43.12,expense
+2024-11-22,Healthcare,Health insurance,208.8,expense
+2024-10-17,Housing,Rent payment,1617.0,expense
+2024-10-20,Housing,Home insurance,1449.6,expense
+2024-10-24,Housing,Property maintenance,1488.0,expense
+2024-10-11,Food,Grocery shopping,364.7,expense
+2024-10-01,Food,Restaurant dinner,124.56,expense
+2024-10-26,Food,Lunch at work,75.9,expense
+2024-10-14,Transportation,Car payment,280.8,expense
+2024-10-16,Transportation,Fuel,88.91,expense
+2024-10-09,Transportation,Public transit,46.0,expense
+2024-10-16,Utilities,Electricity bill,117.6,expense
+2024-10-12,Utilities,Water bill,54.0,expense
+2024-10-12,Utilities,Internet service,77.28,expense
+2024-10-06,Entertainment,Movie tickets,25.4,expense
+2024-10-21,Entertainment,Concert tickets,80.32,expense
+2024-10-19,Entertainment,Streaming services,28.92,expense
+2024-10-04,Healthcare,Doctor visit,101.8,expense
+2024-10-24,Healthcare,Prescription medication,41.04,expense
+2024-10-04,Healthcare,Health insurance,213.6,expense
