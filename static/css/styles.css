@@ -1,0 +1,180 @@
+/* Main CSS styles for Finance Manager application */
+
+.fin-card {
+    transition: transform 0.3s;
+    margin-bottom: 20px;
+}
+
+.fin-card:hover {
+    transform: translateY(-5px);
+}
+
+.income-text {
+    color: #28a745;
+}
+
+.expense-text {
+    color: #dc3545;
+}
+
+.summary-card {
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.income-card {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-left: 5px solid #28a745;
+}
+
+.expense-card {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left: 5px solid #dc3545;
+}
+
+.balance-card {
+    background-color: rgba(0, 123, 255, 0.1);
+    border-left: 5px solid #007bff;
+}
+
+.chart-container {
+    padding: 15px;
+    background-color: #2b3035;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.transaction-form {
+    background-color: #2b3035;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.transactions-table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table-header {
+    background-color: #212529;
+}
+
+.page-header {
+    margin-bottom: 30px;
+    border-bottom: 2px solid #6c757d;
+    padding-bottom: 10px;
+}
+
+.nav-link.active {
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.footer {
+    margin-top: 50px;
+    padding: 20px 0;
+    border-top: 1px solid #6c757d;
+    text-align: center;
+}
+
+/* C++ badge */
+.cpp-badge {
+    background-color: #00599C;
+    color: white;
+    font-size: 0.7em;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-left: 5px;
+}
+
+/* Python badge */
+.py-badge {
+    background-color: #3776AB;
+    color: white;
+    font-size: 0.7em;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-left: 5px;
+}
+
+/* ML badge */
+.ml-badge {
+    background-color: #6610f2;
+    color: white;
+    font-size: 0.7em;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-left: 5px;
+}
+
+/* Loading states for ML chart updates */
+.loading-chart {
+    opacity: 0.5;
+    filter: blur(1px);
+    transition: opacity 0.3s, filter 0.3s;
+}
+
+.chart-loading-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    z-index: 10;
+    font-weight: bold;
+}
+
+/* ML prediction section styling */
+#predictions h5 .fa-brain,
+.fa-piggy-bank,
+.fa-lightbulb {
+    display: inline-block;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Confidence interval styling */
+.confidence-range {
+    font-size: 0.9em;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* ML algorithms explanation tooltip */
+.ml-info-tooltip {
+    cursor: help;
+    position: relative;
+}
+
+.ml-info-tooltip:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    padding: 8px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 0.8rem;
+    z-index: 100;
+}
