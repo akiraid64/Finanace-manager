@@ -1,0 +1,34 @@
+version: '3.8'
+
+# Super simple setup: just run "docker-compose up" and the app will start!
+
+services:
+  # Main app - your personal finance manager
+  web:
+    build: .  # This builds the app from the Dockerfile
+    ports:
+      - "5000:5000"  # This lets you access the app at http://localhost:5000
+    volumes:
+      # These lines save your data and settings on your computer
+      - ./src:/app/src
+      - ./static:/app/static
+      - ./templates:/app/templates
+      - ./data:/app/data  # Your financial data is stored here
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+    restart: unless-stopped  # The app will automatically restart if it crashes
+    healthcheck:  # This checks that the app is working properly
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# HOW TO USE:
+# 1. Open a command prompt or terminal in this folder
+# 2. Type: docker-compose up
+# 3. Wait for everything to start
+# 4. Open your web browser and go to: http://localhost:5000
+# 5. To stop the app, press Ctrl+C in the terminal
